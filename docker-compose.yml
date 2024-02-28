@@ -1,0 +1,37 @@
+version: '3.9'
+
+services:
+  db:
+    build:
+      context: .
+      dockerfile: docker/db/Dockerfile
+    ports:
+      - 33306:3306
+    volumes:
+      - ./docker/db/my.cnf:/etc/mysql/my.cnf
+      - ./docker/db/mysql_data:/var/lib/mysql
+    env_file:
+      - ./docker/db/db-variables.env
+
+  backend:
+    build:
+      context: .
+      dockerfile: docker/backend/Dockerfile
+    ports:
+      - 43000:3000
+    volumes:
+      - ./app:/app
+    command: rails server -b 0.0.0.0
+    depends_on:
+      - db
+    tty: true
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend/Dockerfile
+    volumes:
+      - ./src:/usr/src/app
+    command: 'yarn dev'
+    ports:
+      - '53000:3000'
