@@ -34,4 +34,4 @@ services:
       - ./src:/usr/src/app
     command: 'yarn dev'
     ports:
-      - '3000:3000'
+      - '53000:3000'
